@@ -1,14 +1,14 @@
-public class Pedido {
-    // Atributos solicitados
+public abstract class Pedido {
+    // Atributos comunes solicitados
     private int idPedido;
     private String direccionEntrega;
-    private String tipoPedido;
+    private double distanciaKm;
 
     // Constructor completo
-    public Pedido(int idPedido, String direccionEntrega, String tipoPedido) {
+    public Pedido(int idPedido, String direccionEntrega, double distanciaKm) {
         this.idPedido = idPedido;
         this.direccionEntrega = direccionEntrega;
-        this.tipoPedido = tipoPedido;
+        this.distanciaKm = distanciaKm;
     }
 
     // Getters y Setters
@@ -18,16 +18,17 @@ public class Pedido {
     public String getDireccionEntrega() { return direccionEntrega; }
     public void setDireccionEntrega(String direccionEntrega) { this.direccionEntrega = direccionEntrega; }
 
-    public String getTipoPedido() { return tipoPedido; }
-    public void setTipoPedido(String tipoPedido) { this.tipoPedido = tipoPedido; }
+    public double getDistanciaKm() { return distanciaKm; }
+    public void setDistanciaKm(double distanciaKm) { this.distanciaKm = distanciaKm; }
 
-    // Método base (Sobrescribible)
-    public void asignarRepartidor() {
-        System.out.println("Asignando repartidor genérico...");
+    // Método implementado para mostrar los datos básicos
+    public void mostrarResumen() {
+        // Formatea el ID con ceros a la izquierda para que luzca como #001
+        System.out.println("Pedido #" + String.format("%03d", idPedido));
+        System.out.println("Dirección: " + direccionEntrega);
+        System.out.println("Distancia: " + (int)distanciaKm + " km");
     }
 
-    // Sobrecarga del método (Recibe el nombre del repartidor)
-    public void asignarRepartidor(String nombreRepartidor) {
-        System.out.println("Asignando pedido a " + nombreRepartidor + "...");
-    }
+    // Método abstracto que obligatoriamente implementarán las clases hijas
+    public abstract int calcularTiempoEntrega();
 }
