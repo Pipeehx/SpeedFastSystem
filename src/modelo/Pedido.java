@@ -1,50 +1,47 @@
 package modelo;
 
-import interfaces.Cancelable;
-import interfaces.Despachable;
+public class Pedido {
+    private int id;
+    private String direccionEntrega;
+    private EstadoPedido estado;
 
-public abstract class Pedido implements Despachable, Cancelable {
-    protected int id;
-    protected String direccion;
-    protected double distancia;
-    protected String repartidor;
-
-    public Pedido(int id, String direccion, double distancia) {
+    public Pedido(int id, String direccionEntrega) {
         this.id = id;
-        this.direccion = direccion;
-        this.distancia = distancia;
-        this.repartidor = "No asignado";
-    }
-
-    public abstract int calcularTiempoEntrega();
-
-    public void asignarRepartidor() {
-        this.repartidor = "Repartidor General por Defecto";
-    }
-
-    public void asignarRepartidor(String nombre) {
-        this.repartidor = nombre;
-    }
-
-    public void mostrarResumen() {
-        System.out.println("Pedido #" + id + " | Dirección: " + direccion + " | Distancia: " + distancia + " km | Repartidor: " + repartidor + " | Tiempo Estimado: " + calcularTiempoEntrega() + " mins");
-    }
-
-    @Override
-    public void despachar() {
-        System.out.println("Pedido #" + id + " despachado correctamente.");
-    }
-
-    @Override
-    public void cancelar() {
-        System.out.println("→ Pedido cancelado exitosamente.");
-    }
-
-    public String getRepartidor() {
-        return repartidor;
+        this.direccionEntrega = direccionEntrega;
+        this.estado = EstadoPedido.PENDIENTE; // Por defecto inicia como PENDIENTE
     }
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getDireccionEntrega() {
+        return direccionEntrega;
+    }
+
+    public void setDireccionEntrega(String direccionEntrega) {
+        this.direccionEntrega = direccionEntrega;
+    }
+
+    public EstadoPedido getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoPedido estado) {
+        this.estado = estado;
+    }
+
+    // Método adicional solicitado en la pauta para actualizar el estado fácilmente
+    public void setEstado(String nuevoEstado) {
+        this.estado = EstadoPedido.valueOf(nuevoEstado.toUpperCase());
+    }
+
+    @Override
+    public String toString() {
+        return "Pedido #" + id + " | Destino: " + direccionEntrega + " | Estado: " + estado;
     }
 }
