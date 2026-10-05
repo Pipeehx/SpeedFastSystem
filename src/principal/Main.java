@@ -1,11 +1,14 @@
 package principal;
 
-import modelo.SpeedFastGestor;
+import vista.VentanaPrincipal;
+import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
-        // Delegamos la responsabilidad de gestión al controlador independiente
-        SpeedFastGestor gestor = new SpeedFastGestor();
-        gestor.inicializarSistema();
+        // Ejecución segura de interfaces gráficas en Swing
+        SwingUtilities.invokeLater(() -> {
+            VentanaPrincipal ventana = new VentanaPrincipal();
+            ventana.setVisible(true);
+        });
     }
 }
