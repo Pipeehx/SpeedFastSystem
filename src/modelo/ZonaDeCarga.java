@@ -13,7 +13,8 @@ public class ZonaDeCarga {
 
     public synchronized void agregarPedido(Pedido p) {
         pedidosPendientes.add(p);
-        System.out.println("Pedido #" + p.getId() + " agregado. Destino: " + p.getDireccionEntrega());
+        // Corregido: se usa getDireccion() en lugar de getDireccionEntrega()
+        System.out.println("Pedido #" + p.getId() + " agregado. Destino: " + p.getDireccion());
     }
 
     public synchronized Pedido retirarPedido() {

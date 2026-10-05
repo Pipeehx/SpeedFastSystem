@@ -48,8 +48,12 @@ public class VentanaRegistroPedido extends JFrame {
                 return;
             }
 
+            // Creamos el objeto modelo Pedido
+            modelo.Pedido nuevoPedido = new modelo.Pedido(direccion, tipo, estado);
+
+            // Llamamos al DAO usando el método create
             PedidoDAO pedidoDAO = new PedidoDAO();
-            boolean guardadoExitoso = pedidoDAO.guardar(direccion, tipo, estado);
+            boolean guardadoExitoso = pedidoDAO.create(nuevoPedido);
 
             if (guardadoExitoso) {
                 JOptionPane.showMessageDialog(this, "¡Pedido registrado correctamente en la base de datos!");
