@@ -1,37 +1,63 @@
 package vista;
 
+import dao.RepartidorDAO; // Importamos el DAO que se conecta a la BD
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class VentanaPrincipal extends JFrame {
+
+    // Componente visual para la lista de repartidores
+    private JComboBox<String> jComboBoxRepartidores;
+
     public VentanaPrincipal() {
-        setTitle("SpeedFast - Gestión de Entregas");
-        setSize(400, 300);
+        // Configuración inicial de tu ventana
+        setTitle("SpeedFastSystem - Menú Principal");
+        setSize(450, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setLayout(new GridLayout(4, 1, 10, 10));
 
-        JButton btnRegistrar = new JButton("Registrar Pedido");
-        JButton btnListar = new JButton("Listar Pedidos");
-        JButton btnSalir = new JButton("Salir");
+        initComponents();
 
-        // Navegación hacia el formulario de registro
-        btnRegistrar.addActionListener(e -> {
-            VentanaRegistroPedido ventanaRegistro = new VentanaRegistroPedido();
-            ventanaRegistro.setVisible(true);
-        });
+        // LLAMADA CLAVE: Carga los datos de MySQL al iniciar la ventana
+        cargarRepartidoresEnCombo();
+    }
 
-        // Navegación hacia la tabla de listado
-        btnListar.addActionListener(e -> {
-            VentanaListaPedidos ventanaLista = new VentanaListaPedidos();
-            ventanaLista.setVisible(true);
-        });
+    private void initComponents() {
+        setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20));
 
-        btnSalir.addActionListener(e -> System.exit(0));
+        JLabel lblTitulo = new JLabel("Seleccione un Repartidor de la Base de Datos:");
+        lblTitulo.setFont(new Font("Arial", Font.BOLD, 13));
+        add(lblTitulo);
 
-        add(new JLabel("Bienvenido a SpeedFast System", SwingConstants.CENTER));
-        add(btnRegistrar);
-        add(btnListar);
-        add(btnSalir);
+        // Inicializamos el ComboBox
+        jComboBoxRepartidores = new JComboBox<>();
+        jComboBoxRepartidores.setPreferredSize(new Dimension(280, 30));
+        add(jComboBoxRepartidores);
+
+        JButton btnRecargar = new JButton("Actualizar Lista");
+        btnRecargar.addActionListener(e -> cargarRepartidoresEnCombo());
+        add(btnRecargar);
+    }
+
+    /**
+     * Método para consultar la base de datos y llenar el JComboBox
+     */
+    public void cargarRepartidoresEnCombo() {
+        RepartidorDAO dao = new RepartidorDAO();
+        List<String> nombres = dao.obtenerNombresRepartidores();
+
+        // Limpiamos los elementos anteriores
+        jComboBoxRepartidores.removeAllItems();
+
+        if (nombres.isEmpty()) {
+            jComboBoxRepartidores.addItem("No hay repartidores en la BD");
+        } else {
+            // Añadimos cada repartidor obtenido de MySQL
+            for (String nombre : nombres) {
+                jComboBoxRepartidores.addItem(nombre);
+            }
+        }
     }
 }

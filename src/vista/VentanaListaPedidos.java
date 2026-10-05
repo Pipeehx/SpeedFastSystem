@@ -1,44 +1,68 @@
 package vista;
 
-import modelo.Pedido;
-import modelo.SpeedFastGestor;
+import dao.PedidoDAO;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.List;
 
 public class VentanaListaPedidos extends JFrame {
+
     private JTable tablaPedidos;
-    private DefaultTableModel modeloTabla;
+    private JButton btnActualizar;
 
     public VentanaListaPedidos() {
-        setTitle("Listado de Pedidos Activos");
-        setSize(550, 300);
+        setTitle("SpeedFastSystem - Lista de Pedidos");
+        setSize(650, 400);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
-        setLayout(new BorderLayout());
 
-        // Columnas adaptadas a tus atributos reales
-        modeloTabla = new DefaultTableModel(new String[]{"ID", "Dirección de Entrega", "Estado"}, 0);
-        tablaPedidos = new JTable(modeloTabla);
-
-        cargarDatos();
-
-        add(new JScrollPane(tablaPedidos), BorderLayout.CENTER);
-
-        JButton btnRefrescar = new JButton("Actualizar Tabla");
-        btnRefrescar.addActionListener(e -> cargarDatos());
-        add(btnRefrescar, BorderLayout.SOUTH);
+        initComponents();
+        cargarDatosTabla();
     }
 
-    private void cargarDatos() {
-        modeloTabla.setRowCount(0); // Limpia la tabla
-        for (Pedido p : SpeedFastGestor.getListaPedidos()) {
-            // Usando tus métodos getDireccionEntrega() y getEstado()
-            modeloTabla.addRow(new Object[]{
-                    p.getId(),
-                    p.getDireccionEntrega(),
-                    p.getEstado()
-            });
+    private void initComponents() {
+        setLayout(new BorderLayout());
+
+        // Configuración de la tabla
+        tablaPedidos = new JTable();
+        JScrollPane scrollPane = new JScrollPane(tablaPedidos);
+        add(scrollPane, BorderLayout.CENTER);
+
+        // Panel inferior con botón de actualizar
+        JPanel panelInferior = new JPanel();
+        btnActualizar = new JButton("Actualizar Tabla");
+
+        btnActualizar.addActionListener(e -> {
+            cargarDatosTabla();
+            JOptionPane.showMessageDialog(this, "Tabla actualizada desde la base de datos.");
+        });
+
+        panelInferior.add(btnActualizar);
+        add(panelInferior, BorderLayout.SOUTH);
+    }
+
+    public void cargarDatosTabla() {
+        PedidoDAO pedidoDAO = new PedidoDAO();
+        List<String[]> listaPedidos = pedidoDAO.obtenerPedidosParaTabla();
+
+        // Columnas de la tabla según la base de datos
+        String[] columnas = {"ID", "Dirección", "Tipo", "Estado"};
+
+        // Modelo de tabla no editable
+        DefaultTableModel modelo = new DefaultTableModel(columnas, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        // Rellenar filas con los datos de MySQL
+        for (String[] fila : listaPedidos) {
+            modelo.addRow(fila);
         }
+
+        tablaPedidos.setModel(modelo);
     }
 }
